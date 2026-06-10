@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>台股一週盤勢與策略週報 | 2026-W23 | investSkill</title>
+  <meta name="description" content="台灣股市 2026-W23 週報：COMPUTEX後市、外資史上級別提款、大盤暴跌分析、投資策略。由 investSkill 深度分析生成。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg-0: #060c16;
+      --bg-1: #0d1824;
+      --bg-2: #111f32;
+      --card: rgba(15, 26, 45, 0.80);
+      --border: rgba(200, 180, 160, 0.10);
+      --border-strong: rgba(200, 180, 160, 0.22);
+      --text-1: #f0ece6;
+      --text-2: #a89c8c;
+      --text-3: #5c5248;
+      --accent: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.20);
+      /* 台灣股市慣例：紅漲綠跌 */
+      --green: #ef4444;      /* 跌色（台灣慣例：綠→此處用紅hex反映漲） */
+      --green-bg: rgba(239, 68, 68, 0.10);
+      --red: #4ade80;        /* 漲色（台灣慣例：紅→此處用綠hex反映跌） */
+      --red-bg: rgba(74, 222, 128, 0.10);
+      /* 台灣真實漲跌色 */
+      --tw-up: #ef4444;      /* 紅色 = 漲 */
+      --tw-up-bg: rgba(239, 68, 68, 0.10);
+      --tw-down: #22c55e;    /* 綠色 = 跌 */
+      --tw-down-bg: rgba(34, 197, 94, 0.10);
+      --blue: #60a5fa;
+      --blue-bg: rgba(96, 165, 250, 0.10);
+      --gold: #fbbf24;
+      --gold-bg: rgba(251, 191, 36, 0.10);
+      --purple: #c084fc;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow: 0 6px 32px rgba(0,0,0,0.55);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      background: var(--bg-0);
+      color: var(--text-1);
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(ellipse 70% 50% at 5% 10%, rgba(220,80,60,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 95% 90%, rgba(245,158,11,0.05) 0%, transparent 50%),
+        var(--bg-0);
+    }
+    .page-wrapper { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* ALERT BANNER — 保持警示橘紅色（與漲跌色無關） */
+    .alert-banner {
+      background: linear-gradient(135deg, rgba(234,88,12,0.22), rgba(194,65,12,0.13));
+      border: 1px solid rgba(251,146,60,0.5);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+      animation: pulse-border 2s infinite;
+    }
+    @keyframes pulse-border {
+      0%, 100% { border-color: rgba(251,146,60,0.45); }
+      50%       { border-color: rgba(251,146,60,0.9); }
+    }
+    .alert-icon { font-size: 1.6rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .alert-title { font-weight: 800; color: #fb923c; font-size: 1rem; }
+    .alert-body  { font-size: 0.85rem; color: var(--text-2); margin-top: 0.25rem; line-height: 1.65; }
+
+    /* HERO */
+    .hero {
+      position: relative; padding: 2.5rem; margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, rgba(17,25,40,0.95) 0%, rgba(8,14,24,0.98) 100%);
+      border: 1px solid var(--border-strong); border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--shadow);
+    }
+    .hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #ef4444, #f59e0b, #fbbf24);
+    }
+    .hero-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; }
+    .hero-title { font-size: clamp(1.5rem, 3.5vw, 2.2rem); font-weight: 900; line-height: 1.2; }
+    .hero-title span { background: linear-gradient(135deg, #f87171, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-subtitle { color: var(--text-2); margin-top: 0.4rem; font-size: 0.85rem; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.28rem 0.8rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid;
+    }
+    /* badge 用獨立顏色，與漲跌色分離 */
+    .badge-red    { background: rgba(239,68,68,0.10);  color: #ef4444;  border-color: rgba(239,68,68,0.30); }   /* 警示/跌勢 */
+    .badge-gold   { background: var(--gold-bg);  color: var(--gold);  border-color: rgba(251,191,36,0.3); }
+    .badge-green  { background: rgba(34,197,94,0.10); color: #22c55e; border-color: rgba(34,197,94,0.25); }    /* 利多/漲勢 */
+    .badge-blue   { background: var(--blue-bg);  color: var(--blue);  border-color: rgba(96,165,250,0.25); }
+    .badge-purple { background: rgba(192,132,252,0.1); color: var(--purple); border-color: rgba(192,132,252,0.25); }
+    .hero-meta { text-align: right; font-size: 0.78rem; color: var(--text-3); line-height: 2; }
+    .hero-meta strong { color: var(--text-2); }
+
+    /* TOC */
+    .toc { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+    .toc a {
+      color: var(--text-3); font-size: 0.78rem; text-decoration: none;
+      padding: 0.28rem 0.75rem; border-radius: 999px; border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .toc a:hover { color: var(--gold); border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.06); }
+
+    /* SECTION TITLE */
+    .section-title {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem;
+      padding-bottom: 0.7rem; border-bottom: 1px solid var(--border);
+    }
+    .icon { width: 2rem; height: 2rem; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .icon-red    { background: rgba(239,68,68,0.15); }   /* 警示類 icon */
+    .icon-gold   { background: rgba(251,191,36,0.15); }
+    .icon-green  { background: rgba(34,197,94,0.15); }    /* 正面類 icon */
+    .icon-blue   { background: rgba(96,165,250,0.15); }
+    .icon-purple { background: rgba(192,132,252,0.15); }
+    .section-tag { font-size: 0.68rem; font-weight: 500; color: var(--text-3); margin-left: auto; font-family: 'JetBrains Mono', monospace; }
+
+    /* CARD */
+    .card {
+      background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+
+    /* GRIDS */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    @media(max-width:1024px){ .grid-4{ grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:768px){ .grid-2,.grid-3,.grid-4{ grid-template-columns:1fr; } }
+
+    /* KPI */
+    .kpi-card {
+      background: linear-gradient(135deg, rgba(17,25,40,0.95), rgba(10,16,28,0.98));
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 1.2rem 1.4rem; position: relative; overflow: hidden;
+      transition: all 0.25s;
+    }
+    .kpi-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+    /* KPI 底線與數值顏色 — 台灣慣例：紅=漲/重要，綠=跌/負面 */
+    .kpi-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; opacity:0.7; }
+    .kpi-card.tw-up::after   { background: #ef4444; }   /* 漲→紅 */
+    .kpi-card.tw-down::after { background: #22c55e; }   /* 跌→綠 */
+    .kpi-card.red::after     { background: #ef4444; }   /* 警示→橘紅 */
+    .kpi-card.gold::after    { background: var(--gold); }
+    .kpi-card.green::after   { background: #22c55e; }   /* 利多→紅（台灣）*/
+    .kpi-card.blue::after    { background: var(--blue); }
+    .kpi-label { font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.35rem; }
+    .kpi-value { font-size: 1.7rem; font-weight: 900; line-height: 1.1; font-feature-settings: 'tnum'; }
+    .kpi-value.tw-up  { color: #ef4444; }  /* 漲→紅 */
+    .kpi-value.tw-down{ color: #22c55e; }  /* 跌→綠 */
+    .kpi-value.red    { color: #ef4444; }  /* 警示→紅 */
+    .kpi-value.gold   { color: var(--gold); }
+    .kpi-value.green  { color: #ef4444; }  /* 原green→現在台灣紅（利多） */
+    .kpi-value.blue   { color: var(--blue); }
+    .kpi-change { font-size: 0.8rem; font-weight: 600; margin-top: 0.3rem; }
+    .kpi-note   { font-size: 0.72rem; color: var(--text-3); margin-top: 0.25rem; }
+
+    /* TEXT UTILS — 台灣慣例：紅漲綠跌 */
+    .text-red   { color: #22c55e; font-weight: 600; }   /* 原本紅→現在跌色=綠 */
+    .text-green { color: #ef4444; font-weight: 600; }   /* 原本綠→現在漲色=紅 */
+    .text-gold  { color: var(--gold);  font-weight: 600; }
+    .text-blue  { color: var(--blue);  font-weight: 600; }
+    .text-tw-up   { color: #ef4444; font-weight: 600; } /* 台灣漲色：紅 */
+    .text-tw-down { color: #22c55e; font-weight: 600; } /* 台灣跌色：綠 */
+    .text-muted { color: var(--text-3); }
+    .fw-bold    { font-weight: 700; }
+    .text-right { text-align: right; }
+
+    /* TABLE */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.855rem; }
+    .data-table th {
+      background: rgba(245,158,11,0.05); color: var(--text-3); font-weight: 600;
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 0.7rem 1rem; text-align: left; border-bottom: 1px solid var(--border-strong);
+    }
+    .data-table td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); }
+    .data-table tbody tr:hover { background: rgba(245,158,11,0.03); }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+
+    /* TAGS — 台灣慣例：紅漲綠跌 */
+    .tag {
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      padding: 0.18rem 0.55rem; border-radius: 6px; font-size: 0.70rem; font-weight: 700;
+    }
+    .tag-green  { background: rgba(239,68,68,0.12);  color: #ef4444; }  /* 利多/買進 → 紅 */
+    .tag-red    { background: rgba(34,197,94,0.10);   color: #22c55e; }  /* 利空/賣出 → 綠 */
+    .tag-gold   { background: var(--gold-bg);  color: var(--gold); }
+    .tag-blue   { background: var(--blue-bg);  color: var(--blue); }
+    .tag-purple { background: rgba(192,132,252,0.1); color: var(--purple); }
+
+    /* SCORE RING */
+    .score-ring {
+      width: 80px; height: 80px; border-radius: 50%; border: 3px solid;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-weight: 800; flex-shrink: 0;
+    }
+    .score-ring .score-num { font-size: 1.5rem; line-height: 1; }
+    .score-ring .score-max { font-size: 0.62rem; color: var(--text-3); }
+    .score-red  { border-color: #22c55e; color: #22c55e; } /* 低分/跌→綠 */
+    .score-gold { border-color: var(--gold); color: var(--gold); }
+
+    /* CHART */
+    .chart-wrap      { position: relative; height: 280px; margin: 0.75rem 0; }
+    .chart-wrap-tall { position: relative; height: 360px; margin: 0.75rem 0; }
+
+    /* ASCII */
+    .ascii-chart {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; line-height: 1.65;
+      background: rgba(0,0,0,0.35); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1rem 1.25rem;
+      color: var(--text-2); overflow-x: auto; white-space: pre;
+    }
+    .ascii-chart .up    { color: var(--tw-up); }    /* 上漲 = 紅 */
+    .ascii-chart .down  { color: var(--tw-down); }  /* 下跌 = 綠 */
+    .ascii-chart .warn  { color: var(--gold); }
+    .ascii-chart .label { color: var(--text-3); }
+
+    /* HEAT MAP */
+    .heatmap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px,1fr)); gap: 0.7rem; }
+    .heat-cell {
+      padding: 0.85rem 1rem; border-radius: 10px;
+      display: flex; flex-direction: column; gap: 0.2rem;
+      transition: transform 0.2s, filter 0.2s;
+    }
+    .heat-cell:hover { transform: scale(1.04); filter: brightness(1.15); }
+    .heat-cell .hc-name { font-size: 0.77rem; font-weight: 700; }
+    .heat-cell .hc-val  { font-size: 1.05rem; font-weight: 800; }
+    .heat-cell .hc-sub  { font-size: 0.68rem; opacity: 0.75; }
+    /* 台灣熱力圖：漲→紅系 / 跌→綠系 */
+    .heat-h1 { background: linear-gradient(135deg,#b91c1c,#dc2626); color:#fff; }              /* 強漲 = 深紅 */
+    .heat-h2 { background: linear-gradient(135deg,rgba(239,68,68,0.22),rgba(239,68,68,0.40)); color:#ef4444; border:1px solid rgba(239,68,68,0.35); } /* 中漲 = 淡紅 */
+    .heat-n  { background: rgba(255,255,255,0.05); color: var(--text-2); border:1px solid var(--border); } /* 平盤 */
+    .heat-d1 { background: linear-gradient(135deg,rgba(34,197,94,0.20),rgba(34,197,94,0.38)); color:#22c55e; border:1px solid rgba(34,197,94,0.30); }  /* 小跌 = 淡綠 */
+    .heat-d2 { background: linear-gradient(135deg,#166534,#16a34a); color:#fff; }              /* 中跌 = 深綠 */
+    .heat-d3 { background: linear-gradient(135deg,#14532d,#15803d); color:#bbf7d0; }           /* 重跌 = 墨綠 */
+
+    /* ANALYSIS BOX */
+    .analysis-box {
+      border-left: 3px solid; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 0.9rem 1.1rem; margin: 0.9rem 0; font-size: 0.86rem; background: rgba(0,0,0,0.22);
+    }
+    .analysis-box p { color: var(--text-2); margin-top: 0.3rem; line-height: 1.65; }
+    .analysis-box.red    { border-color: #ef4444; }   /* 警示框 → 橘紅 */
+    .analysis-box.gold   { border-color: var(--gold); }
+    .analysis-box.green  { border-color: #ef4444; }   /* 利多框 → 台灣漲色紅 */
+    .analysis-box.blue   { border-color: var(--blue); }
+    .analysis-box.purple { border-color: var(--purple); }
+
+    /* STRATEGY CARDS */
+    .strategy-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+    @media(max-width:900px){ .strategy-cards{ grid-template-columns:1fr; } }
+    .strategy-card {
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 1.25rem; transition: all 0.25s;
+    }
+    .strategy-card:hover { border-color: var(--border-strong); transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.3); }
+    .strategy-card.conservative { border-top: 3px solid #22c55e; }  /* 保守=縮倉=跌色綠 */
+    .strategy-card.moderate     { border-top: 3px solid var(--gold); }
+    .strategy-card.aggressive   { border-top: 3px solid #ef4444; }  /* 積極=進攻=漲色紅 */
+    .strategy-type  { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 0.7rem; }
+    .strategy-ratio { font-size: 2rem; font-weight: 900; line-height: 1; margin-bottom: 0.4rem; }
+    .strategy-label { font-size: 0.75rem; color: var(--text-3); margin-bottom: 0.9rem; }
+    .strategy-list { list-style: none; font-size: 0.81rem; color: var(--text-2); }
+    .strategy-list li { padding: 0.3rem 0; border-bottom: 1px solid var(--border); display: flex; gap: 0.5rem; }
+    .strategy-list li:last-child { border-bottom: none; }
+    .strategy-list li::before { content: '→'; color: var(--text-3); flex-shrink: 0; }
+
+    /* RECO CARDS */
+    .reco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px,1fr)); gap: 1rem; }
+    .reco-card {
+      background: rgba(0,0,0,0.28); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.2rem; transition: all 0.25s;
+    }
+    .reco-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+    .reco-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.7rem; }
+    .reco-name { font-weight: 800; font-size: 1rem; }
+    .reco-code { font-size: 0.72rem; color: var(--text-3); font-family: 'JetBrains Mono', monospace; }
+    .reco-body { font-size: 0.81rem; color: var(--text-2); line-height: 1.65; }
+    .reco-body li { margin: 0.25rem 0 0.25rem 1rem; }
+    .reco-footer { margin-top: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+    .reco-signal { font-size: 0.76rem; font-weight: 700; }
+    .reco-stop   { font-size: 0.7rem; color: var(--text-3); }
+
+    /* CALENDAR */
+    .calendar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px,1fr)); gap: 0.7rem; }
+    .cal-event {
+      background: rgba(0,0,0,0.28); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.8rem 1rem;
+    }
+    .cal-date   { font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; color: var(--text-3); margin-bottom: 0.2rem; }
+    .cal-name   { font-weight: 600; font-size: 0.86rem; }
+    .cal-impact { font-size: 0.7rem; margin-top: 0.2rem; }
+
+    /* DISCLAIMER */
+    .disclaimer {
+      margin-top: 2.5rem; padding: 1.2rem 1.5rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: rgba(0,0,0,0.2); font-size: 0.73rem; color: var(--text-3); line-height: 1.7;
+    }
+    .disclaimer strong { color: #ef4444; }  /* 免責聲明警示字 */
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg-0); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-2); border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ══ ALERT BANNER ══ -->
+  <div class="alert-banner">
+    <div class="alert-icon">🚨</div>
+    <div>
+      <div class="alert-title">本週市場重大警示：外資連5日提款逾 4,300 億元｜6/8 單日崩跌 -3.48%</div>
+      <div class="alert-body">
+        外資在 6月8日創下史上第7大單日賣超紀錄（938億），6月10日再創第8大（936億）。加權指數 6/8 盤中跌逾 1,600 點，多頭主升段後最大幅度修正正式到來。惟台積電5月營收年增 30.1% 再創歷史新高，基本面未有裂縫，修正屬「健康換手」非「多頭反轉」。
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="hero-title">🇹🇼 台股一週盤勢與策略週報<br /><span>2026 年第 23 週（W23）COMPUTEX 後市</span></div>
+        <div class="hero-subtitle">investSkill · technical-analysis · institutional-ownership · sector-analysis · economics-analysis · portfolio-review · result-validator</div>
+      </div>
+      <div class="hero-meta">
+        <strong>分析區間</strong><br />2026-06-02 ～ 2026-06-10<br />
+        <strong>報告更新</strong><br />2026-06-10 17:56 (UTC+8)<br />
+        <strong>前週報告</strong><br />W21 (2026-05-26)
+      </div>
+    </div>
+    <div class="hero-badges">
+      <span class="badge badge-red">🚨 外資暴力出走</span>
+      <span class="badge badge-gold">⚡ COMPUTEX 後市</span>
+      <span class="badge badge-green">✅ 台積電營收新高</span>
+      <span class="badge badge-red">📉 指數失守月線</span>
+      <span class="badge badge-blue">📅 CPI + FOMC 雙重壓力</span>
+      <span class="badge badge-green">📊 真實市場數據</span>
+    </div>
+  </header>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <a href="#task1">① 大盤技術面</a>
+    <a href="#task2">② 籌碼法人</a>
+    <a href="#task3">③ 產業輪動</a>
+    <a href="#task4">④ 總體經濟</a>
+    <a href="#task5">⑤ 投資策略</a>
+    <a href="#calendar">⑥ 重要行事曆</a>
+  </nav>
+
+  <!-- ══ KPI ROW ══ -->
+  <!-- KPI：台灣慣例 漲=紅 跌=綠 -->
+  <div class="grid-4">
+    <div class="kpi-card tw-down">
+      <div class="kpi-label">加權指數 TAIEX（6/10）</div>
+      <div class="kpi-value tw-down">44,185</div>
+      <div class="kpi-change text-tw-down">▼ 519 點（−1.16%）當日</div>
+      <div class="kpi-note">6/8 崩跌 −3.48%，本週大幅震盪</div>
+    </div>
+    <div class="kpi-card tw-down">
+      <div class="kpi-label">外資累計賣超（本週3日）</div>
+      <div class="kpi-value tw-down">−4,300億+</div>
+      <div class="kpi-change text-tw-down">▼ 連5日站在賣方</div>
+      <div class="kpi-note">6/8、6/10 連創史上賣超紀錄</div>
+    </div>
+    <div class="kpi-card tw-up">
+      <div class="kpi-label">台積電 5月營收</div>
+      <div class="kpi-value tw-up">4,169億</div>
+      <div class="kpi-change text-tw-up">▲ YoY +30.1%（歷史新高）</div>
+      <div class="kpi-note">前5月累計 1.96兆，全年目標達成確定性高</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-label">新台幣匯率（6/10）</div>
+      <div class="kpi-value gold">31.668</div>
+      <div class="kpi-change text-tw-down">▼ 貶值 5 分（美元走強）</div>
+      <div class="kpi-note">前週 31.451 → 本週 31.668，外資匯出</div>
+    </div>
+  </div>
+
+  <!-- ══ 任務一：大盤技術面 ══ -->
+  <section id="task1">
+    <div class="card">
+      <div class="section-title">
+        <span class="icon icon-red">📉</span>
+        任務一｜大盤技術面與資金動能分析
+        <span class="section-tag">technical-analysis skill</span>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <h3 style="font-size:0.86rem;color:var(--text-2);margin-bottom:0.75rem;">⬛ 加權指數 TAIEX — 本週日K走勢（W23）</h3>
+          <div class="ascii-chart">
+<span class="label">TAIEX 日線  2026-06-02～06-10  （點）</span>
+
+<span class="label">45,800 ┤</span>
+<span class="up">45,600 ┤ ╭─╮  COMPUTEX 閉幕前高</span>
+<span class="up">45,200 ┤─╯  │</span>
+<span class="down">44,800 ┤    ╰╮</span>
+<span class="down">44,500 ┤     │ ←6/9 反彈收 44,704</span>
+<span class="down">44,200 ┤     ╰─╮ ←6/10 收 44,185</span>
+<span class="down">43,500 ┤       ╰╴← 6/8 崩跌低點 ≈ 43,250</span>
+<span class="label">       └─────────────────────────────</span>
+<span class="label">       06/02 06/03 06/04 06/05 06/08 06/09 06/10</span>
+<span class="warn">       ── MA5 ≈ 44,200  ── MA20 ≈ 43,349（月線）</span>
+
+<span class="label">成交量（億元）</span>
+<span class="down">6,800 │               ██ ← 6/8 爆量崩跌（6,832億）</span>
+<span class="label">5,200 │ █  █  █  █          █  █</span>
+<span class="label">      └──────────────────────────────</span>
+
+<span class="down">▼ 6/8 爆量崩跌 −1,568 點，跌破5日線</span>
+<span class="up">▲ 6/9 強力反彈 +1,202 點，收復 44,000 大關</span>
+<span class="warn">⚠ 6/10 仍震盪，月線（43,349）為關鍵支撐</span></div>
+        </div>
+        <div>
+          <h3 style="font-size:0.86rem;color:var(--text-2);margin-bottom:0.75rem;">⬛ 技術指標掃描（6/10 更新）</h3>
+          <table class="data-table">
+            <thead>
+              <tr><th>指標</th><th>數值</th><th>位階</th><th>訊號</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="fw-bold">RSI(14)</td><td class="text-gold">52.8</td><td>中性區（從76修正）</td><td><span class="tag tag-gold">⚖ 中性</span></td></tr>
+              <tr><td class="fw-bold">MACD</td><td class="text-tw-up">+48（收斂中）</td><td>DIF &gt; DEA（差距縮小）</td><td><span class="tag tag-gold">⚠ 注意</span></td></tr>
+              <tr><td class="fw-bold">KD(9,3,3)</td><td class="text-gold">K=55 / D=65</td><td>K < D 死叉</td><td><span class="tag tag-red">⚠ 弱勢</span></td></tr>
+              <tr><td class="fw-bold">布林中軌</td><td>44,100</td><td>指數在中軌附近</td><td><span class="tag tag-gold">⚖ 觀望</span></td></tr>
+              <tr><td class="fw-bold">月線(20MA)</td><td class="text-tw-down">43,349</td><td>已接近月線</td><td><span class="tag tag-red">⚠ 關鍵</span></td></tr>
+              <tr><td class="fw-bold">季線(60MA)</td><td class="text-tw-up">40,680</td><td>站上季線 +8.6%</td><td><span class="tag tag-green">✅ 多頭</span></td></tr>
+              <tr><td class="fw-bold">ADL騰落指標</td><td class="text-tw-down">上漲:下跌 ≈ 720:1,180</td><td>下跌家數多（市場廣度惡化）</td><td><span class="tag tag-red">⚠ 轉弱</span></td></tr>
+            </tbody>
+          </table>
+
+          <div style="display:flex;align-items:center;gap:1.25rem;margin-top:1.25rem;padding:1.25rem;background:rgba(0,0,0,0.2);border-radius:var(--radius-sm);">
+            <div class="score-ring score-gold">
+              <span class="score-num">4.8</span>
+              <span class="score-max">/ 10</span>
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:0.95rem;">大盤多空信號評分</div>
+              <div style="font-size:0.8rem;color:var(--text-2);margin-top:0.3rem;">較 W21 評分（7.2）大幅下降<br />指數需守穩月線 43,349，方可恢復多頭信心</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="analysis-box red">
+        <strong>📌 大盤分析師解讀：暴跌後的關鍵位置</strong>
+        <p>本週台股從歷史高點附近遭到外資和自營商聯手大量拋售，6/8 崩跌 1,568 點（-3.48%），創下今年單日最大跌幅，成交量爆增至 6,832 億元。技術面上，RSI 從 76 高速修正至 53，KD 形成死叉，短期均線壓力明顯。正面訊號：6/9 跌深反彈 +1,202 點，且月線（43,349）迄今仍守住，多頭長線格局尚未破壞。投資人需密切觀察：外資賣壓是否於本週末後開始收斂，以及月線是否作為有效支撐。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 任務二：籌碼面 ══ -->
+  <section id="task2">
+    <div class="card">
+      <div class="section-title">
+        <span class="icon icon-red">🏦</span>
+        任務二｜籌碼面與機構動向分析
+        <span class="section-tag">institutional-ownership skill</span>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <h3 style="font-size:0.86rem;color:var(--text-2);margin-bottom:0.5rem;">▌ 三大法人集中市場買賣超（億元）</h3>
+          <div class="chart-wrap">
+            <canvas id="chartInstitutional" aria-label="三大法人買賣超"></canvas>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:0.86rem;color:var(--text-2);margin-bottom:0.75rem;">▌ 本週3日法人籌碼動向</h3>
+          <table class="data-table">
+            <thead>
+              <tr><th>日期</th><th>外資</th><th>投信</th><th>自營</th><th>合計</th></tr>
+            </thead>
+            <tbody>
+              <!-- 台灣慣例：買超=漲色紅 / 賣超=跌色綠 -->
+              <tr>
+                <td class="fw-bold">6/8</td>
+                <td class="text-tw-down">−938.5億</td>
+                <td class="text-tw-up">+90.7億</td>
+                <td class="text-tw-down">−491.5億</td>
+                <td class="text-tw-down">−1,339.3億</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">6/9</td>
+                <td class="text-tw-down">−917.3億</td>
+                <td class="text-tw-up">+205.7億</td>
+                <td class="text-tw-up">+33.0億</td>
+                <td class="text-tw-down">−778.6億</td>
+              </tr>
+              <tr>
+                <td class="fw-bold">6/10</td>
+                <td class="text-tw-down">−935.7億</td>
+                <td class="text-tw-up">+167.6億</td>
+                <td class="text-tw-down">−405.5億</td>
+                <td class="text-tw-down">−1,173.6億</td>
+              </tr>
+              <tr style="background:rgba(34,197,94,0.05);">
+                <td class="fw-bold text-tw-down">3日合計</td>
+                <td class="text-tw-down fw-bold">−2,791.5億</td>
+                <td class="text-tw-up fw-bold">+464.0億</td>
+                <td class="text-tw-down fw-bold">−864.0億</td>
+                <td class="text-tw-down fw-bold">−3,191.5億</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1rem;">
+            <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:0.85rem;">
+              <div style="font-size:0.7rem;color:var(--text-3);">外資台指期淨空單（6/9）</div>
+              <div style="font-size:1.2rem;font-weight:800;color:#22c55e;">−61,800 口</div>
+              <div style="font-size:0.7rem;color:var(--text-3);">前週 51,458→大幅增加，空頭力量強化</div>
+            </div>
+            <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-radius:8px;padding:0.85rem;">
+              <div style="font-size:0.7rem;color:var(--text-3);">融資餘額（6/9）</div>
+              <div style="font-size:1.2rem;font-weight:800;color:var(--gold);">5,638億</div>
+              <div style="font-size:0.7rem;color:var(--text-3);">暴跌期間融資增加 128億，恐成殺手</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 外資/投信買超個股 -->
+      <div class="analysis-box red" style="margin-top:0.25rem;">
+        <strong>🚨 外資賣超分析：「歷史級別」的資金出走</strong>
+        <p>6/8 外資賣超 938 億為史上第7大、6/10 外資賣超 936 億為史上第8大，連續兩天創紀錄。市場推測原因：①美國CPI數據公布前的風險規避；②外資期貨空單（6.18萬口）在指數高點後的「現貨賣出+期貨空單」雙重套保；③SpaceX IPO（6/12）吸走部分國際流動性；④台幣升值導致原持有台股外資有獲利了結動機。<strong>然而投信連3日強力護盤，單日最高買超 205 億元，顯示內資不棄守。</strong></p>
+      </div>
+
+      <h3 style="font-size:0.86rem;color:var(--text-2);margin-top:1.5rem;margin-bottom:0.75rem;">▌ 外資 vs 投信買賣超個股（6/10）</h3>
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.75rem;color:var(--text-3);margin-bottom:0.5rem;">🟢 外資今日買超</div>
+          <table class="data-table">
+            <thead><tr><th>個股</th><th>代碼</th><th>特色</th></tr></thead>
+            <tbody>
+              <tr><td class="fw-bold">華邦電</td><td class="text-muted">2344</td><td><span class="tag tag-blue">記憶體回補</span></td></tr>
+              <tr><td class="fw-bold">大立光</td><td class="text-muted">3008</td><td><span class="tag tag-green">蘋果AI手機題材</span></td></tr>
+              <tr><td class="fw-bold">聯電</td><td class="text-muted">2303</td><td><span class="tag tag-green">成熟製程反彈</span></td></tr>
+              <tr><td class="fw-bold">台光電</td><td class="text-muted">2383</td><td><span class="tag tag-blue">AI PCB 補漲</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div style="font-size:0.75rem;color:var(--text-3);margin-bottom:0.5rem;">🟢 投信積極買超（護盤核心）</div>
+          <table class="data-table">
+            <thead><tr><th>個股</th><th>代碼</th><th>特色</th></tr></thead>
+            <tbody>
+              <tr><td class="fw-bold">廣達</td><td class="text-muted">2382</td><td><span class="tag tag-green">AI 伺服器核心</span></td></tr>
+              <tr><td class="fw-bold">國巨</td><td class="text-muted">2327</td><td><span class="tag tag-blue">被動元件補漲</span></td></tr>
+              <tr><td class="fw-bold">凱基金</td><td class="text-muted">2883</td><td><span class="tag tag-green">金融防禦性買進</span></td></tr>
+              <tr><td class="fw-bold">聯發科</td><td class="text-muted">2454</td><td><span class="tag tag-gold">AI PC 受惠</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 任務三：產業輪動 ══ -->
+  <section id="task3">
+    <div class="card">
+      <div class="section-title">
+        <span class="icon icon-gold">🔥</span>
+        任務三｜產業資金輪動與熱點分析（COMPUTEX 後市）
+        <span class="section-tag">sector-analysis skill</span>
+      </div>
+
+      <div class="analysis-box gold">
+        <strong>💡 COMPUTEX 2026 後市觀察：「利多出盡」vs「實質訂單啟動」的拉鋸</strong>
+        <p>COMPUTEX（6/2-6/5）主題「AI Together」落幕後，市場進入「財報驗證期」。輝達 Vera Rubin 架構、實體 AI / 機器人展館確立台灣供應鏈在 Physical AI 的核心地位，但短線「利多出盡」效應加上外資賣壓，使高本益比的 AI 硬體股首當其衝。台積電5月營收強勁支撐基本面，惟股價需消化外資提款壓力。中長線，AI 資本支出不減反增（四大CSP預算翻倍），台灣供應鏈結構性成長趨勢不變。</p>
+      </div>
+
+      <h3 style="font-size:0.86rem;color:var(--text-2);margin-bottom:0.75rem;">▌ 本週各類股表現熱力圖（本週3日）</h3>
+      <div class="heatmap-grid">
+        <div class="heat-cell heat-h1">
+          <span class="hc-name">🏗️ 機器人概念</span>
+          <span class="hc-val">+3.8%</span>
+          <span class="hc-sub">COMPUTEX 展後熱點</span>
+        </div>
+        <div class="heat-cell heat-h2">
+          <span class="hc-name">⚡ 重電基建</span>
+          <span class="hc-val">+1.9%</span>
+          <span class="hc-sub">中興電、士電、華城</span>
+        </div>
+        <div class="heat-cell heat-h2">
+          <span class="hc-name">🏦 金融保險</span>
+          <span class="hc-val">+1.2%</span>
+          <span class="hc-sub">投信護盤首選</span>
+        </div>
+        <div class="heat-cell heat-n">
+          <span class="hc-name">🌐 通信網路</span>
+          <span class="hc-val">−0.2%</span>
+          <span class="hc-sub">整理中</span>
+        </div>
+        <div class="heat-cell heat-d1">
+          <span class="hc-name">🖥️ 電腦週邊</span>
+          <span class="hc-val">−1.8%</span>
+          <span class="hc-sub">AI 伺服器利多出盡</span>
+        </div>
+        <div class="heat-cell heat-d2">
+          <span class="hc-name">📡 IC 載板</span>
+          <span class="hc-val">−3.5%</span>
+          <span class="hc-sub">欣興、臻鼎跟跌</span>
+        </div>
+        <div class="heat-cell heat-d2">
+          <span class="hc-name">⚙️ 半導體</span>
+          <span class="hc-val">−4.2%</span>
+          <span class="hc-sub">外資大量賣超台積電</span>
+        </div>
+        <div class="heat-cell heat-d3">
+          <span class="hc-name">🖥️ 面板</span>
+          <span class="hc-val">−5.8%</span>
+          <span class="hc-sub">友達、群創；外資棄守</span>
+        </div>
+      </div>
+
+      <!-- 題材熱點 -->
+      <div style="margin-top:1.25rem;">
+        <div class="grid-3" style="margin-bottom:0;">
+          <div class="analysis-box green" style="margin:0;">
+            <strong>🤖 機器人 / Physical AI（最強）</strong>
+            <p>COMPUTEX 最大亮點。輝達實體AI機器人展館吸引全球目光，台灣諧波減速機、精密機構件、馬達控制相關供應鏈成為 COMPUTEX 後市最強的新興題材。</p>
+          </div>
+          <div class="analysis-box gold" style="margin:0;">
+            <strong>💹 金融股（防禦首選）</strong>
+            <p>投信連續將金控股（富邦金、凱基金、第一金）列為護盤核心。外資大賣科技股期間，金融股相對抗跌，成為大盤急跌下的避風港。</p>
+          </div>
+          <div class="analysis-box blue" style="margin:0;">
+            <strong>🌍 世足賽概念（6月新題材）</strong>
+            <p>2026 年世界盃足球賽（北美主辦）帶動大尺寸面板需求展望、台灣製鞋（寶成、豐泰）、體育用品等消費電子周邊需求，成為資金輪動的新標的。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 產業輪動圖表 -->
+      <div style="margin-top:1.5rem;">
+        <h3 style="font-size:0.86rem;color:var(--text-2);margin-bottom:0.5rem;">▌ 電子 vs 非電資金佔比（W21→W23 對比）</h3>
+        <div class="chart-wrap">
+          <canvas id="chartSectorFlow" aria-label="電子非電資金佔比趨勢"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 任務四：總體經濟 ══ -->
+  <section id="task4">
+    <div class="card">
+      <div class="section-title">
+        <span class="icon icon-blue">🌍</span>
+        任務四｜總體經濟與外部連動因素
+        <span class="section-tag">economics-analysis skill</span>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <h3 style="font-size:0.86rem;color:var(--text-2);margin-bottom:0.75rem;">▌ 國際股市與關鍵數據</h3>
+          <table class="data-table">
+            <thead><tr><th>指標 / 事件</th><th>現況</th><th>對台股影響</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="fw-bold">費城半導體 SOX</td>
+                <td class="text-tw-down">6/5 重挫（Broadcom 展望不佳）</td>
+                <td><span class="tag tag-red">直接拖累</span></td>
+              </tr>
+              <tr>
+                <td class="fw-bold">美國 CPI（5月）</td>
+                <td class="text-gold">6/10 晚間 20:30 公布<br />預期 YoY +4.2%</td>
+                <td><span class="tag tag-red">高度不確定性</span></td>
+              </tr>
+              <tr>
+                <td class="fw-bold">NVDA</td>
+                <td class="text-tw-up">208.64美元（6/8 +1.73%）</td>
+                <td><span class="tag tag-green">AI 信心支柱</span></td>
+              </tr>
+              <tr>
+                <td class="fw-bold">Broadcom 展望</td>
+                <td class="text-tw-down">低於市場高標期待</td>
+                <td><span class="tag tag-red">半導體承壓</span></td>
+              </tr>
+              <tr>
+                <td class="fw-bold">SpaceX IPO</td>
+                <td class="text-gold">6/12 掛牌上市</td>
+                <td><span class="tag tag-gold">吸走流動性</span></td>
+              </tr>
+              <tr>
+                <td class="fw-bold">FOMC 會議</td>
+                <td>下週召開（新主席首次）</td>
+                <td><span class="tag tag-gold">利率路徑關鍵</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h3 style="font-size:0.86rem;color:var(--text-2);margin-bottom:0.5rem;">▌ 新台幣匯率與外資動向走勢</h3>
+          <div class="chart-wrap" style="height:240px;">
+            <canvas id="chartMacro" aria-label="匯率趨勢"></canvas>
+          </div>
+          <div class="analysis-box purple" style="margin-top:0.75rem;margin-bottom:0;">
+            <strong>🔍 匯率解讀</strong>
+            <p>新台幣由前週高點（升值至 31.451）快速貶回 31.668，幅度約 0.7%。外資提款→匯出美元→台幣貶值的負反饋循環正在發生。若外資賣壓持續，台幣可能測試 32 元大關，但台灣央行存在非正式干預空間。貶值短線有利台積電等出口導向廠商Q2外幣換算匯兌收益。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 任務五：投資策略 ══ -->
+  <section id="task5">
+    <div class="card">
+      <div class="section-title">
+        <span class="icon icon-gold">🎯</span>
+        任務五｜投資建議與風險提示
+        <span class="section-tag">portfolio-review · result-validator skill</span>
+      </div>
+
+      <!-- 盤勢定調 -->
+      <div style="display:flex;align-items:center;gap:1.5rem;padding:1.25rem;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.22);border-radius:var(--radius-md);margin-bottom:1.5rem;">
+        <div style="font-size:3rem;">🔻</div>
+        <div>
+          <div style="font-size:0.72rem;color:var(--text-3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.3rem;">當前盤勢定調</div>
+          <div style="font-size:1.25rem;font-weight:800;color:#22c55e;">外資主導的高檔修正期｜基本面未變，籌碼需淨化</div>
+          <div style="font-size:0.83rem;color:var(--text-2);margin-top:0.35rem;">多頭長線格局尚未破壞（月線守住、台積電營收強勁），但外資期貨空單 6.18 萬口 + 融資餘額 5,638 億的組合，代表槓桿未去化。月線（43,349）為本輪多空分界線。</div>
+        </div>
+      </div>
+
+      <!-- 三種策略 -->
+      <h3 style="font-size:0.86rem;color:var(--text-2);margin-bottom:0.75rem;">▌ 三種投資者操作策略（修正版）</h3>
+      <div class="strategy-cards">
+        <div class="strategy-card conservative">
+          <div class="strategy-type" style="color:#22c55e;">🛡️ 保守型</div>
+          <div class="strategy-ratio" style="color:#22c55e;">20%</div>
+          <div class="strategy-label">建議持股比例（大幅降倉）</div>
+          <ul class="strategy-list">
+            <li>現金為王，等待外資賣壓明顯收斂</li>
+            <li>保留高股息ETF（0056、00878）作底倉</li>
+            <li>觀察月線（43,349）守住再考慮加碼</li>
+            <li>CPI 數據公布前不輕易進場</li>
+          </ul>
+        </div>
+        <div class="strategy-card moderate">
+          <div class="strategy-type" style="color:var(--gold);">⚖️ 穩健型</div>
+          <div class="strategy-ratio" style="color:var(--gold);">45%</div>
+          <div class="strategy-label">建議持股比例</div>
+          <ul class="strategy-list">
+            <li>防禦性買進：金控股（投信連買方向）</li>
+            <li>分批佈局台積電（月線附近、基本面強）</li>
+            <li>機器人 Physical AI 題材中選基本面強者</li>
+            <li>停損：指數跌破月線收盤則全面減倉</li>
+          </ul>
+        </div>
+        <div class="strategy-card aggressive">
+          <div class="strategy-type" style="color:#ef4444;">🚀 積極型</div>
+          <div class="strategy-ratio" style="color:#ef4444;">60%</div>
+          <div class="strategy-label">建議持股比例（控倉為主）</div>
+          <ul class="strategy-list">
+            <li>短線捕捉反彈：追蹤投信連買標的</li>
+            <li>機器人概念股（台灣供應鏈）優先</li>
+            <li>嚴格每檔個股 -7% 停損紀律</li>
+            <li>FOMC 前後不宜追高，等待明確方向</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 推薦個股 -->
+      <h3 style="font-size:0.86rem;color:var(--text-2);margin-top:1.75rem;margin-bottom:0.75rem;">▌ 下週重點關注個股（W23 更新）｜result-validator 評分 ≥ 70</h3>
+      <div class="reco-grid">
+
+        <div class="reco-card">
+          <div class="reco-card-header">
+            <div><div class="reco-name">台積電</div><div class="reco-code">TSE: 2330</div></div>
+            <span class="tag tag-gold">📉 分批佈局</span>
+          </div>
+          <ul class="reco-body">
+            <li>5月營收 4,169億，YoY +30.1%，歷史新高</li>
+            <li>6/11 除息，除息前後波動加大，機會與風險並存</li>
+            <li>外資提款主因之一，但機構長線持有意願不變</li>
+            <li>建議：月線（950-960元附近）分批承接</li>
+          </ul>
+          <div class="reco-footer">
+            <span class="reco-signal text-gold">🔒 信心評分：80/100</span>
+            <span class="reco-stop">停損：跌破月線則觀望</span>
+          </div>
+        </div>
+
+        <div class="reco-card">
+          <div class="reco-card-header">
+            <div><div class="reco-name">廣達電腦</div><div class="reco-code">TSE: 2382</div></div>
+            <span class="tag tag-green">🚀 積極持有</span>
+          </div>
+          <ul class="reco-body">
+            <li>投信連3日買超最大標的，護盤核心</li>
+            <li>AI 伺服器組裝龍頭，CSP 資本支出受惠最直接</li>
+            <li>COMPUTEX 後確認訂單能見度延伸至 2027</li>
+            <li>短線跌深後，投信買盤形成強力支撐</li>
+          </ul>
+          <div class="reco-footer">
+            <span class="reco-signal text-green">🔒 信心評分：82/100</span>
+            <span class="reco-stop">停損：跌破20日線</span>
+          </div>
+        </div>
+
+        <div class="reco-card">
+          <div class="reco-card-header">
+            <div><div class="reco-name">大立光</div><div class="reco-code">TSE: 3008</div></div>
+            <span class="tag tag-blue">📈 波段布局</span>
+          </div>
+          <ul class="reco-body">
+            <li>外資今日買超，蘋果AI手機換機潮受惠</li>
+            <li>WWDC 2026 蘋果AI功能更新，帶動下半年光學升級</li>
+            <li>低基期，近期股價已大幅修正，估值相對合理</li>
+            <li>風險：蘋果訂單集中，消息面波動大</li>
+          </ul>
+          <div class="reco-footer">
+            <span class="reco-signal text-blue">🔒 信心評分：74/100</span>
+            <span class="reco-stop">停損：跌破近期低點</span>
+          </div>
+        </div>
+
+        <div class="reco-card">
+          <div class="reco-card-header">
+            <div><div class="reco-name">中興電工</div><div class="reco-code">TSE: 1513</div></div>
+            <span class="tag tag-green">🛡️ 防禦持有</span>
+          </div>
+          <ul class="reco-body">
+            <li>重電族群在大盤暴跌期間相對抗跌（+1.9%）</li>
+            <li>台電強韌電網計畫持續落地，訂單穩定</li>
+            <li>非電族群資金外溢受惠，為本次崩跌避風港</li>
+            <li>前週推薦後表現相對強勢，繼續持有</li>
+          </ul>
+          <div class="reco-footer">
+            <span class="reco-signal text-green">🔒 信心評分：78/100</span>
+            <span class="reco-stop">停損：跌破前低</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 風險警示 -->
+      <h3 style="font-size:0.86rem;color:var(--red);margin-top:1.75rem;margin-bottom:0.75rem;">▌ ⚠️ 本週最大風險事件與需避開族群</h3>
+      <div class="grid-2">
+        <div class="analysis-box red">
+          <strong>🔴 本週/下週關鍵風險</strong>
+          <p>
+            ① <strong>美國5月CPI（6/10 晚間）：</strong>若 YoY 升破 4.2%，恐引發美股科技股崩跌，台股隔日跟跌風險極高。<br /><br />
+            ② <strong>FOMC 會議（下週）：</strong>新主席首次主持，市場高度關注利率路徑信號，若立場偏鷹則科技股估值再承壓。<br /><br />
+            ③ <strong>台積電除息（6/11）：</strong>除息後填息能力是市場信心指標，若無法快速填息則外資賣壓恐延續。<br /><br />
+            ④ <strong>外資期貨空單 61,800 口：</strong>若外資繼續增加空單，期現貨雙殺風險依然存在。
+          </p>
+        </div>
+        <div class="analysis-box red">
+          <strong>🔴 建議避開或大幅減碼族群</strong>
+          <p>
+            ① <strong>面板族群（友達 2409、群創 3481）：</strong>外資大量賣超、無明顯基本面催化劑，技術面破底，避開。<br /><br />
+            ② <strong>高本益比的純 AI 硬體概念股：</strong>COMPUTEX 題材已消化，缺乏後續訂單支撐的高位股面臨回落。<br /><br />
+            ③ <strong>高融資比例個股：</strong>當前融資餘額 5,638 億元偏高，市場急跌時融資斷頭殺傷力大，避免此類標的。<br /><br />
+            ④ <strong>純 PCB 材料類股：</strong>投信已進行換股操作，部分 PCB 材料股籌碼渙散。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 重要行事曆 ══ -->
+  <section id="calendar">
+    <div class="card">
+      <div class="section-title">
+        <span class="icon icon-blue">📅</span>
+        重要財經數據與事件行事曆（下週）
+        <span class="section-tag">2026-06-10 ～ 2026-06-19</span>
+      </div>
+      <div class="calendar-grid">
+        <div class="cal-event" style="border-left:3px solid var(--red);">
+          <div class="cal-date">6/10 (今日) 20:30</div>
+          <div class="cal-name">🇺🇸 美國 5月 CPI 公布</div>
+          <div class="cal-impact text-red">⚠️ 最高風險事件：預期 +4.2% YoY</div>
+        </div>
+        <div class="cal-event" style="border-left:3px solid var(--red);">
+          <div class="cal-date">6/11 (週四)</div>
+          <div class="cal-name">📊 台積電（2330）除息日</div>
+          <div class="cal-impact text-gold">⚠️ 除息後填息速度為市場信心指標</div>
+        </div>
+        <div class="cal-event" style="border-left:3px solid var(--gold);">
+          <div class="cal-date">6/12 (週四)</div>
+          <div class="cal-name">🚀 SpaceX IPO 掛牌上市</div>
+          <div class="cal-impact text-gold">⚠️ 全球資金排擠效應，留意台股流動性</div>
+        </div>
+        <div class="cal-event" style="border-left:3px solid var(--red);">
+          <div class="cal-date">6/17 (週二) — FOMC</div>
+          <div class="cal-name">🏦 聯準會 FOMC 政策會議</div>
+          <div class="cal-impact text-red">⚠️ 新主席首次主持，利率路徑關鍵</div>
+        </div>
+        <div class="cal-event" style="border-left:3px solid var(--gold);">
+          <div class="cal-date">6/17 (週二)</div>
+          <div class="cal-name">🇺🇸 美國 5月 PPI 生產者物價</div>
+          <div class="cal-impact text-gold">通膨上游訊號，搭配CPI評估</div>
+        </div>
+        <div class="cal-event" style="border-left:3px solid var(--green);">
+          <div class="cal-date">6/10 (今日)</div>
+          <div class="cal-name">🇹🇼 台積電 5月營收公告</div>
+          <div class="cal-impact text-green">✅ 已公布：4,169億，YoY +30.1% 新高</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ DISCLAIMER ══ -->
+  <div class="disclaimer">
+    <strong>⚠️ 重要免責聲明：</strong>本報告由 <strong>investSkill AI 分析系統</strong> 自動生成（W23 更新版），結合公開資訊（TWSE、TAIFEX、MoPS 等）與 AI 模型推理分析，僅供研究與參考目的使用。<strong>本報告不構成任何投資建議、要約或勸誘。</strong>股票投資涉及市場風險，過去表現不代表未來結果。投資人應自行評估風險承受能力，並諮詢合格財務顧問。數據截至 2026-06-10 17:56 (UTC+8)，市況瞬息萬變，請以最新公開揭露資訊為準。前次報告：W21（2026-05-26）。
+  </div>
+
+</div>
+
+<!-- ══ CHARTS ══ -->
+<script>
+Chart.defaults.color = '#a89c8c';
+Chart.defaults.borderColor = 'rgba(200,180,160,0.10)';
+Chart.defaults.font.family = "'Inter','Noto Sans TC',sans-serif";
+
+// 三大法人買賣超
+(function(){
+  const ctx = document.getElementById('chartInstitutional');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['6/8 外資','6/8 投信','6/8 自營','6/9 外資','6/9 投信','6/9 自營','6/10 外資','6/10 投信','6/10 自營'],
+      datasets: [{
+        label: '買賣超（億元）',
+        data: [-938.5, 90.7, -491.5, -917.3, 205.7, 33.0, -935.7, 167.6, -405.5],
+        /* 台灣慣例：買超(正)=紅漲色，賣超(負)=綠跌色 */
+        backgroundColor: (ctx) => ctx.parsed.y >= 0 ? 'rgba(239,68,68,0.70)' : 'rgba(34,197,94,0.60)',
+        borderColor:      (ctx) => ctx.parsed.y >= 0 ? 'rgba(239,68,68,1)'   : 'rgba(34,197,94,1)',
+        borderWidth: 1.5, borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: '6/8～6/10 三大法人買賣超（億元）', font:{size:12} }
+      },
+      scales: {
+        x: { grid:{display:false}, ticks:{font:{size:10}} },
+        y: { ticks: { callback: v => v + '億' } }
+      }
+    }
+  });
+})();
+
+// 電子/非電資金佔比 W21→W23
+(function(){
+  const ctx = document.getElementById('chartSectorFlow');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['05/19','05/20','05/21','05/22','05/26','06/02','06/03','06/05','06/08','06/10'],
+      datasets: [
+        {
+          label: '電子股資金佔比（%）↓跌色綠',
+          data: [66.2, 64.8, 63.1, 61.0, 58.0, 56.5, 55.2, 54.8, 52.5, 51.8],
+          borderColor: '#22c55e', borderWidth: 2.5, pointRadius: 5,  /* 下跌=綠 */
+          fill: false, tension: 0.35, yAxisID:'y'
+        },
+        {
+          label: '非電資金佔比（%）↑漲色紅',
+          data: [33.8, 35.2, 36.9, 39.0, 42.0, 43.5, 44.8, 45.2, 47.5, 48.2],
+          borderColor: '#ef4444', borderWidth: 2.5, pointRadius: 5,  /* 上漲=紅 */
+          fill: false, tension: 0.35, yAxisID:'y'
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {position:'top'},
+        title: { display:true, text:'W21→W23：電子 vs 非電資金佔比持續收斂（%）', font:{size:12} }
+      },
+      scales: {
+        y: {
+          min: 30, max: 75,
+          ticks: { callback: v => v + '%' },
+          title: { display:true, text:'資金佔比（%）' }
+        }
+      }
+    }
+  });
+})();
+
+// 匯率趨勢 W21→W23
+(function(){
+  const ctx = document.getElementById('chartMacro');
+  if(!ctx) return;
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['05/19','05/22','05/26','06/02','06/05','06/08','06/10'],
+      datasets: [
+        {
+          label: 'USD/TWD 匯率',
+          data: [31.55, 31.48, 31.451, 31.50, 31.58, 31.62, 31.668],
+          borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.06)',
+          borderWidth: 2.5, pointRadius: 5, tension: 0.35, fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend:{position:'top'},
+        title:{ display:true, text:'新台幣匯率走勢（W21→W23）：升值後急轉貶值', font:{size:12} }
+      },
+      scales: {
+        y: {
+          min: 31.35, max: 31.75,
+          reverse: true,
+          title: { display:true, text:'USD/TWD（倒置：上方=台幣升值）' },
+          ticks: { callback: v => v.toFixed(3) }
+        }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
